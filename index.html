@@ -1,0 +1,101 @@
+<style>
+    body {
+        padding: 50px;
+        font-family: 'verdana';
+        font-size: 16px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    #guessing_field {
+        padding: 10px;
+        margin: 20px;
+    }
+    #reset_button {
+        margin: 20px;
+        padding: 10px;
+    }
+    #reset_button {
+        font-size: 16px;
+    }
+</style>
+
+<body>
+    <h1>Guess a number between 1 and 100!</h1>
+    <hr>        
+    <input id="guessing_field" type="text">
+    <p id="results_text"></p>
+    <input id="reset_button" type="submit" value="Try again">
+</body>
+
+<script>
+    let secret = undefined;
+    let guesses = undefined;
+    let maxGuesses = undefined;
+    let outputText = undefined;
+
+    const inputField = document.getElementById('guessing_field');
+    const resultsText = document.getElementById('results_text');
+    const resetButton = document.getElementById('reset_button');
+
+    function startOrResetGame() {
+        secret = Math.floor(Math.random() * 100) + 1;
+        guesses = 0;
+        maxGuesses = 5;
+        outputText = '';
+
+        inputField.disabled = false;
+        inputField.focus();
+
+        addOutputText("I've chosen a number! Guessing time... Good luck!!");
+        addOutputText("");
+    }
+
+    function processGuess(input) {
+        guesses = guesses + 1;
+
+        if (input > secret) {
+            addOutputText(input + " is too high!");
+        } else if (input < secret) {
+            addOutputText(input + " is too low!");
+        } else if (input == secret) {
+            addOutputText("You got it!! It was " + input);
+
+            inputField.disabled = true;
+
+            return;
+        }
+
+        if (guesses >= maxGuesses) {
+            addOutputText("Game over! It was " + secret);
+
+            inputField.disabled = true;
+        }
+    }
+
+    function submitGuess(event) {
+        if (event.key == 'Enter') {
+            let inputFieldValue = inputField.value;
+
+            processGuess(inputFieldValue);
+
+            inputField.value = '';
+        }
+    }
+
+    function addOutputText(textLine) {
+        outputText = outputText + "<br>" + textLine;
+
+        replaceResults();
+    }
+
+    function replaceResults() {
+        resultsText.innerHTML = outputText;
+    }
+
+    startOrResetGame();
+
+    inputField.addEventListener('keypress', submitGuess);
+    resetButton.addEventListener('click', startOrResetGame);
+
+</script>
